@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html class="wide wow-animation" lang="en">
+  <head>
+    <title>Grafica de temperatura</title>
+    <meta name="format-detection" content="telephone=no">
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="utf-8">
+    <link rel="icon" href="images/favicon.ico" type="image/x-icon">
+    <script src="/static/Chart.min.js"></script>
+    <script src="/static/jquery.min.js"></script>
+    <script src="/static/index.js"></script>
+    
+    <!-- Stylesheets-->
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Montserrat:400,500,600,700%7CPoppins:400%7CTeko:300,400">
+    <link rel="stylesheet" href="/static/index.css">
+  </head>
+
+  <h2>Se actualizara en...</h2>
+  <h1>5</h1>
+
+  <!-- bar chart canvas element -->
+  
+  <canvas class="box2"  id="myChart" width="800" height="600"></canvas>
+  <div class="container-down-graph">
+    <a href="graph_temp#si" class="button-3d-temp" onclick="reloadPage()" >Actualizacion automatica de datos</a>
+    <a href="graph_temp#no" class="button-3d-temp" onclick="reloadPage()" >Actualizacion manual de datos</a>
+</div>
+  
+
+  <script> 
+    // Global parameters:
+  // do not resize the chart canvas when its container does (keep at 600x400px)
+  Chart.defaults.global.responsive = false;
+  Chart.defaults.global.defaultFontColor = "#fff";
+  // define the chart data
+  var chartData = {
+  labels : [{% for item in labels %}
+  "{{item}}", 
+  {% endfor %}],
+  datasets : [{
+  label: '{{ legend }}',
+  fill: true,
+  lineTension: 0.1,
+  backgroundColor: "rgba(75,192,192,0.4)",
+  borderColor: "rgba(255, 255, 255, 0.8)",
+  borderCapStyle: 'butt',
+  borderDash: [],
+  borderDashOffset: 0.0,
+  borderJoinStyle: 'miter',
+  pointBorderColor: "rgba(75,192,192,1)",
+  pointBackgroundColor: "#fff",
+  pointBorderWidth: 1,
+  pointHoverRadius: 5,
+  pointHoverBackgroundColor: "rgba(75,192,192,1)",
+  pointHoverBorderColor: "rgba(220,220,220,1)",
+  pointHoverBorderWidth: 2,
+  pointRadius: 1,
+  pointHitRadius: 10,
+  data : [{% for item in values %}
+  {{item}},
+  {% endfor %}],
+  spanGaps: false
+  }]
+  }
+  // get chart canvas
+  var holder = document.getElementById("myChart");
+  var ctx = document.getElementById("myChart").getContext("2d");
+  var pointSelected = document.getElementById("pointSelected");
+ 
+  // create the chart using the chart canvas
+  var myChart = new Chart(ctx, {
+  type: 'line',
+  data: chartData,
+  options: {
+  tooltips: {
+  enabled: true,
+  mode: 'single',
+  callbacks: {
+  label: function(tooltipItems, data) {
+  return tooltipItems.yLabel + ' degrees';
+  }
+  }
+  },
+  }
+  });
+
+
+  </script>
+
+  <script>
+    function reloadPage() {
+      setTimeout(function () {
+        location.reload();
+      }, 100);
+    }
+    if(window.location.hash){
+    if(window.location.hash === "#si"){
+    let cont = 5;
+    setInterval(() => {
+    document.querySelector('h1').innerText = cont;
+    cont--;
+    if(cont == 0) location.reload();
+}, 1000);
+    }
+  }
+  </script>
+     
+</html>  
